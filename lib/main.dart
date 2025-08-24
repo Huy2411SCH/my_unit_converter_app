@@ -43,7 +43,7 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   final TextEditingController _celsiusController = TextEditingController();
   double? _fahrenheitResult;
-
+  String _displayText = "Fahrenheit: ";
   @override
   Widget build(BuildContext context) {
     // This method is called whenever the state changes 
@@ -63,31 +63,45 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
 
             ),
-            ElevatedButton(
-              onPressed: () {
-                  double? celsius = double.tryParse(_celsiusController.text);
-                  if (celsius != null) {
-                    double fahrenheit = celsius * 9 / 5 + 32;
-                    setState(() {
-                      _fahrenheitResult = fahrenheit;
-                    });
-                  } else {
-                    // Show an error message if the input is not a valid number
-                    setState(() {
-                      _fahrenheitResult = null;
-                    });
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: ElevatedButton(
+                  onPressed: () {
+                    double? celsius = double.tryParse(_celsiusController.text);
+                    if (celsius != null) {
+                      double fahrenheit = celsius * 9 / 5 + 32;
+                      //Update the Text display
+                      setState(() {
+                        _fahrenheitResult = fahrenheit;
+                        _displayText = "Fahrenheit: ${_fahrenheitResult!.toStringAsFixed(2)}";
+                      });
+                    } else {
+                      // Show an error message if the input is not a valid number
+                      setState(() {
+                        _fahrenheitResult = null;
+                        _displayText = "Fahrenheit: ";
+                      });
                       ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                                    content: Text('Please enter a valid number!'),
-                                    duration: Duration(seconds: 2),
-                                    ),
+                        const SnackBar(
+                          content: Text('Please enter a valid number!'),
+                          duration: Duration(seconds: 2),
+                        ),
                       );
-                  }
-              },
-              child: const Text('Convert'),
-            ),
-            if (_fahrenheitResult != null)
-              Text("Fahrenheit: ${_fahrenheitResult!.toStringAsFixed(2)}"),
+                    }
+                  },
+                  child: const Padding(
+                    padding: EdgeInsets.all(15.0),
+                    child: Text('Convert'),
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Text(
+                  _displayText,
+
+                ),
+              ),
           ],
         ),
       ), // This trailing comma makes auto-formatting nicer for build methods.
