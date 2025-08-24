@@ -76,11 +76,12 @@ class _MyHomePageState extends State<MyHomePage> {
                         _displayText = "Fahrenheit: ${_fahrenheitResult!.toStringAsFixed(2)}";
                       });
                     } else {
-                      // Show an error message if the input is not a valid number
+                      //Update/reset the Text display when wrong input
                       setState(() {
                         _fahrenheitResult = null;
                         _displayText = "Fahrenheit: ";
                       });
+                      // Show an error message if the input is not a valid number
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
                           content: Text('Please enter a valid number!'),
@@ -99,7 +100,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 padding: const EdgeInsets.all(16.0),
                 child: Text(
                   _displayText,
-
+                  style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
               ),
           ],
