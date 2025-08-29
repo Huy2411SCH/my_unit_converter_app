@@ -43,7 +43,11 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   final TextEditingController _celsiusController = TextEditingController();
   double? _fahrenheitResult;
+  double? _feetResult;
   String _displayText = "Fahrenheit: ";
+  String _selectedConversion = 'Celsius to Fahrenheit';
+  String _buttonText = "Convert to Fahrenheit";
+  final List<String> _conversionTypes = ['Celsius to Fahrenheit', 'Meters to Feet'];
   @override
   Widget build(BuildContext context) {
     // This method is called whenever the state changes 
@@ -55,31 +59,82 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            DropdownButton(
+          // Initial Value
+          value: _selectedConversion,
+          // Down Arrow Icon
+          icon: const Icon(Icons.keyboard_arrow_down),    
+
+          items: _conversionTypes.map((String conversionType) {
+            return DropdownMenuItem<String>(
+              value: conversionType,
+              child: Text(conversionType),
+            );
+          }).toList(),
+          // After selecting the desired option,it will
+          // change button value to selected value    
+          onChanged: (String? newValue) {
+            setState(() {
+              _selectedConversion = newValue!;
+              
+              if (_selectedConversion == 'Celsius to Fahrenheit') {
+                _buttonText = "Convert to Fahrenheit";
+                _displayText = "Fahrenheit: ";
+              } else if (_selectedConversion == 'Meters to Feet') {
+                _buttonText = "Convert to Feet";
+                _displayText = "Feet: ";
+              }
+            });
+          },
+            ),
             Padding(
               padding: EdgeInsets.all(20.0),
-              child: TextField(
-                controller: _celsiusController,
-                keyboardType: TextInputType.number,
-              ),
+              child: Row (
+                children: [
+                  if (_selectedConversion == 'Celsius to Fahrenheit')
+                    const Text("Celsius: ")
+                  else
+                    const Text("Meters: "),
 
+                  Expanded(
+                    child: TextField(
+                      controller: _celsiusController,
+                      keyboardType: TextInputType.number,
+                    ),
+                  ),
+                ],
+              ),
             ),
               Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: ElevatedButton(
                   onPressed: () {
-                    double? celsius = double.tryParse(_celsiusController.text);
-                    if (celsius != null) {
-                      double fahrenheit = celsius * 9 / 5 + 32;
-                      //Update the Text display
+                    double? input = double.tryParse(_celsiusController.text);
+                    if (input != null) {
+                      double? fahrenheitResult;
+                      double? feetResult;
+                      if (_selectedConversion == 'Celsius to Fahrenheit') {
+                        fahrenheitResult = input * 9 / 5 + 32;
+                      } else if (_selectedConversion == 'Meters to Feet') {
+                        feetResult = input * 3.28084;
+                      }
+                      // Update the Text display
                       setState(() {
-                        _fahrenheitResult = fahrenheit;
-                        _displayText = "Fahrenheit: ${_fahrenheitResult!.toStringAsFixed(2)}";
+                        _fahrenheitResult = fahrenheitResult;
+                        _feetResult = feetResult;
+                        _displayText = _selectedConversion == 'Celsius to Fahrenheit'
+                            ? "Fahrenheit: ${_fahrenheitResult!.toStringAsFixed(2)}"
+                            : "Feet: ${_feetResult!.toStringAsFixed(2)}";
                       });
-                    } else {
+                    } 
+                    else {
                       //Update/reset the Text display when wrong input
                       setState(() {
                         _fahrenheitResult = null;
-                        _displayText = "Fahrenheit: ";
+                        _feetResult = null;
+                        _displayText = _selectedConversion == 'Celsius to Fahrenheit'
+                            ? "Fahrenheit: "
+                            : "Feet: ";
                       });
                       // Show an error message if the input is not a valid number
                       ScaffoldMessenger.of(context).showSnackBar(
@@ -90,9 +145,9 @@ class _MyHomePageState extends State<MyHomePage> {
                       );
                     }
                   },
-                  child: const Padding(
+                  child: Padding(
                     padding: EdgeInsets.all(15.0),
-                    child: Text('Convert'),
+                    child: Text(_buttonText),
                   ),
                 ),
               ),
