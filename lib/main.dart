@@ -59,43 +59,46 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            DropdownButton(
-          // Initial Value
-          value: _selectedConversion,
-          // Down Arrow Icon
-          icon: const Icon(Icons.keyboard_arrow_down),    
-
-          items: _conversionTypes.map((String conversionType) {
-            return DropdownMenuItem<String>(
-              value: conversionType,
-              child: Text(conversionType),
-            );
-          }).toList(),
-          // After selecting the desired option,it will
-          // change button value to selected value    
-          onChanged: (String? newValue) {
-            setState(() {
-              _selectedConversion = newValue!;
-              
-              if (_selectedConversion == 'Celsius to Fahrenheit') {
-                _buttonText = "Convert to Fahrenheit";
-                _displayText = "Fahrenheit: ";
-              } else if (_selectedConversion == 'Meters to Feet') {
-                _buttonText = "Convert to Feet";
-                _displayText = "Feet: ";
-              }
-            });
-          },
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: DropdownButton(
+                // Initial Value
+                value: _selectedConversion,
+                // Down Arrow Icon
+                icon: const Icon(Icons.keyboard_arrow_down),
+                // Items to select
+                items: _conversionTypes.map((String conversionType) {
+                  return DropdownMenuItem<String>(
+                    value: conversionType,
+                    child: Text(conversionType),
+                  );
+                }).toList(),
+                // After selecting the desired option,it will
+                // change button value and display text to selected value
+                onChanged: (String? newValue) {
+                  setState(() {
+                    _selectedConversion = newValue!;
+                    if (_selectedConversion == 'Celsius to Fahrenheit') {
+                      _buttonText = "Convert to Fahrenheit";
+                      _displayText = "Fahrenheit: ";
+                    } else if (_selectedConversion == 'Meters to Feet') {
+                      _buttonText = "Convert to Feet";
+                      _displayText = "Feet: ";
+                    }
+                  });
+                },
+              ),
             ),
             Padding(
               padding: EdgeInsets.all(20.0),
               child: Row (
                 children: [
+                  // Create different Text widget based on the selected conversion
                   if (_selectedConversion == 'Celsius to Fahrenheit')
                     const Text("Celsius: ")
                   else
                     const Text("Meters: "),
-
+                  // A container for the TextField
                   Expanded(
                     child: TextField(
                       controller: _celsiusController,
@@ -109,6 +112,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 padding: const EdgeInsets.all(16.0),
                 child: ElevatedButton(
                   onPressed: () {
+                    // put the text field value into a variable
                     double? input = double.tryParse(_celsiusController.text);
                     if (input != null) {
                       double? fahrenheitResult;
@@ -136,7 +140,7 @@ class _MyHomePageState extends State<MyHomePage> {
                             ? "Fahrenheit: "
                             : "Feet: ";
                       });
-                      // Show an error message if the input is not a valid number
+                      // Show an error message if the input is not a valid number or null
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
                           content: Text('Please enter a valid number!'),
@@ -153,6 +157,7 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
               Padding(
                 padding: const EdgeInsets.all(16.0),
+                // Display the conversion result
                 child: Text(
                   _displayText,
                   style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
