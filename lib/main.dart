@@ -103,11 +103,12 @@ class _MyHomePageState extends State<MyHomePage> {
                 padding: const EdgeInsets.all(16.0),
                 child: ElevatedButton(
                   onPressed: () {
-                    // put the text field value into a variable
+                    // put the TextField value into a variable
                     double? input = double.tryParse(_celsiusController.text);
                     if (input != null) {
                       double? fahrenheitResult;
                       double? feetResult;
+                      // Calculate the conversion result
                       if (_selectedConversion == 'Celsius to Fahrenheit') {
                         fahrenheitResult = input * 9 / 5 + 32;
                       } else if (_selectedConversion == 'Meters to Feet') {
